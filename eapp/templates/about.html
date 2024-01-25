@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static%}
+{% block title %}About{% endblock title %}
+{% block banner_slider%}
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{%static '\images\banner\b1.jpg'%}" class="d-block w-100" alt="banner images">
+    </div>
+    <div class="carousel-item ">
+      <img src="{%static '\images\banner\b2.jpg'%}" class="d-block w-100" alt="banner images">
+    </div>
+    <div class="carousel-item ">
+      <img src="{%static '\images\banner\b3.jpg'%}" class="d-block w-100" alt="banner images">
+    </div>
+    <div class="carousel-item ">
+      <img src="{%static '\images\banner\b4.jpg'%}" class="d-block w-100" alt="banner images">
+    </div>
+  </div>
+</div>
+
+{% endblock banner_slider%}
+
+{% block main-content %}
+<div class="container mt-3">
+    <br>
+    <h2 class="text-center">About Us</h2>
+    <div class="row container">
+        <p class="fs-4 text-center">This is a public limited company having its
+            registred and coporate office at edappally city of eranakkulam district in kerala.
+            The company was incoporated in the year 2022 and production commenced in 2023.
+            This is one of the fastest growing public listed companies in eranakkulam.
+        </p>
+    </div>
+    <br>
+    <br>
+    <h2 class="text-center">Mission</h2>
+    <br>
+    <div class="row container">
+        <p class="fs-4 text-center">To embarace the right technology to delight
+            our coustomers
+            Empouring the farmer community through our unique 'relationship farming' model
+            To anticipate, understand and respond to our coustomers needs by creating high-quality products
+            and making them available throughinnovations and convinent channels.
+
+        </p>
+    </div>
+
+</div>
+<br></br>
+{% endblock main-content %}
