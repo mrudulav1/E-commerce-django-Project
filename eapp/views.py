@@ -36,6 +36,7 @@ class CategoryTittle(View):
 
 
 class ProductDetails(View):
+    # never forget return
     def get(self,request,pk):
         product=Product.objects.get(pk=pk)
         return render(request,'productdetails.html',locals())
