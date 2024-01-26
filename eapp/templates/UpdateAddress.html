@@ -12,7 +12,7 @@
         <form action="" method="post">
             {% csrf_token %}
             {% for fm in form %}
-            {{fm.label_tag}}{{fm}} <small class="text-danger">{{fm.errors|striptags}}</small>
+            {{fm.label_tag}} {{fm}} <small class="text-danger">{{fm.errors|striptags}}</small>
             {% endfor %}
             <div class="col-12 mt-3">
                 <button type="submit" class="btn btn-primary">Update</button>
