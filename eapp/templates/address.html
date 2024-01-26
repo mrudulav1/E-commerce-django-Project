@@ -13,7 +13,7 @@
                 <li class="d-grid"><a href="{% url 'address' %}" class="btn btn-primary">Address</a></li>
             </ul>
         </div>
-        <div class="col-sm-8 offset-sm-1">
+        <div class="col-sm-9 offset-sm-1">
             <div class="row">
                 {% for ad in add %}
                 <div class="col-sm-6">
@@ -26,11 +26,15 @@
                             <p>city:{{ad.city}}</p>
                             <p>state:{{ad.state}}</p>
                             <p>Pincode:{{ad.zipcode}}</p>
-                            <p class="text-center"><a href="{% url 'UpdateAddress' pk=ad.id %}" type="button" class="btn btn-success">Update</a></p>
+                            <p class="text-center"><a href="{% url 'UpdateAddress' pk=ad.id %}" type="button"
+                                    class="btn btn-success">Update</a></p>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
-        {% endblock main-content %}
+    </div>
+</div>
+
+{% endblock main-content %}
