@@ -13,6 +13,8 @@ urlpatterns = [
     path("category-title/<val>",views.CategoryTittle.as_view(),name="category-title"),
     path("product-details/<int:pk>",views.ProductDetails.as_view(),name="product-details"),
     path('profile/',views.ProfileView.as_view(),name='profile'),
+    path('address/',views.ProfileView.as_view(),name='address'),
+
 
 #login authentication
     path('registration/',views.CustomerRegistrationView.as_view(),name='customerregistration'),
