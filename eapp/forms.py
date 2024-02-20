@@ -20,7 +20,7 @@ class CustomerRegisterationForm(UserCreationForm):
 
 class MyPasswordChangeForm(PasswordChangeForm):
    old_password=forms.CharField(label="Old Password",widget=forms.PasswordInput(attrs={'autofocus':'True','autocomplete':'current-password','class':'form-control'}))
-   new_password1=forms.CharField(label="new Password1",widget=forms.PasswordInput(attrs=
+   new_password1=forms.CharField(label="new Password",widget=forms.PasswordInput(attrs=
    {'autocomplete':'current-password','class':'form-control'}))
    new_password2=forms.CharField(label="Confirm Password",widget=forms.PasswordInput(attrs={'autocomplete':'current-password','class':'form-control'}))
 
