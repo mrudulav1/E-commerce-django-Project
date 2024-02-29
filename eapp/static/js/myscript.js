@@ -1,6 +1,6 @@
 
-
 $('.plus-cart').click(function(){
+    console.log("clicked")
     var id=$(this).attr("pid").toString();
     var eml = this.parentNode.children[2]
     console.log("pid=",id)
@@ -31,8 +31,14 @@ $('.minus-cart').click(function(){
         data:{
             prod_id:id
         },
+        // success:function(data){
+        //     // console.log("data=",data);
+        //     eml.innerText=data.quantity
+        //     document.getElementById("amount").innerText=data.amount
+        //     document.getElementById("totalamount").innerText=data.totalamount
+        // }
         success:function(data){
-            // console.log("data=",data);
+            console.log("data=",data);
             eml.innerText=data.quantity
             document.getElementById("amount").innerText=data.amount
             document.getElementById("totalamount").innerText=data.totalamount
