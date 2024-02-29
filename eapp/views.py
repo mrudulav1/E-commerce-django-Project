@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.db.models import Count
 # from django.http import HttpResponse
 from django.views import View
-from .models import Product,Customer
+from .models import Product,Customer,Cart
 from .forms import CustomerRegisterationForm,CustomerProfileForm
 from django.contrib import messages
 # from django.http import HttpResponse
@@ -100,7 +100,18 @@ class UpdateAddress(View):
         else:
             messages.warning(request,"Invalid Input Data")
         return redirect("address")
+    
+def add_to_cart(request):
+    user=request.user
+    product_id=request.GET.get('prod_id')
+    product=Product.objects.get(id=product_id)
+    Cart(user=user,product=product).save()
+    return redirect('/cart')
 
+def show_cart(request):
+    user=request.user
+    cart=Cart.objects.filter(user=user)
+    return render(request,'addtocart.html',locals())
 
 
 
