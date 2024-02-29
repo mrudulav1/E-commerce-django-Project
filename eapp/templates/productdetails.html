@@ -23,20 +23,23 @@
             <h4>Product Features</h4>
             <ul class="fs-5" style="font-family: Rajdhani;">
                 <li>{{product.description}}</li>
+                <li>Compisition:{{product.compisition}}</li>
+                <li>Use{{product.prodapp}}</li>
+
             </ul>
-            <div class="buttons row flex" style="font-family: Rajdhani;">
-                <form action="add-to-cart" class="d-inline">
-                    <input type="hidden" name="prod_id" value="{{product.id}}">
-                    <button type="submit" class="btn btn-primary shadow px-5 py-2">Add to Cart</button>
-                </form>
-<a href="{% url 'showcart' %}" class="btn btn-warning shadow px-5 py-2 ms-4">Buy Now</a>
-                </div>
+            <!-- <div class="buttons row flex" style="font-family: Rajdhani;"> -->
+            <form action="/add-to-cart" class="d-inline" >
+                <input type="hidden" name="prod_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-primary shadow px-5 py-2">Add to Cart</button>
+            </form>
+            <a href="{% url 'showcart' %}" class="btn btn-warning shadow px-5 py-2 ms-4">Buy Now</a>
+            <!-- </div> -->
 
-
-            </div>
 
         </div>
+
     </div>
+</div>
 
 </div>
 
