@@ -2,10 +2,12 @@ from django.shortcuts import render,redirect
 from django.db.models import Count
 from django.http import JsonResponse
 from django.views import View
+import razorpay
 from .models import Product,Customer,Cart
 from .forms import CustomerRegisterationForm,CustomerProfileForm
 from django.contrib import messages
 from django.db.models import Q
+from django.conf import settings
 
 # Create your views here.
 def home(request):
@@ -117,6 +119,12 @@ class checkout(View):
             value=p.quantity * p.product.discounted_price
             famount=famount + value
         totalamount=famount + 40
+        razoramount=int(totalamount * 100)
+        client=razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
+        data={"amount":razoramount,"currency":"INR","receipt":"order_rcptid_11"}
+        payment_response=client.order.create(data=data)
+        print(payment_response)
+        
         return render(request,'checkout.html',locals())
 
 def show_cart(request):
