@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect
 from django.db.models import Count
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 import razorpay
-from .models import Product,Customer,Cart
+from .models import Payment, Product,Customer,Cart
 from .forms import CustomerRegisterationForm,CustomerProfileForm
 from django.contrib import messages
 from django.db.models import Q
@@ -109,23 +109,67 @@ def add_to_cart(request):
     Cart(user=user,product=product).save()
     return redirect('/cart/')
 
+# class checkout(View):
+#     def post(self,request):
+#         print(request.method)
+#         user=request.user
+#         add=Customer.objects.filter(user=user)
+#         cart_items=Cart.objects.filter(user=user)
+#         famount=0
+#         for p in cart_items:
+#             value=p.quantity * p.product.discounted_price
+#             famount=famount + value
+#         totalamount=famount + 40
+#         razoramount=int(totalamount * 100)
+#         client=razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
+#         data={"amount":razoramount,"currency":"INR","receipt":"order_rcptid_11"}
+#         payment_response=client.order.create(data=data)
+#         print(payment_response)
+#         return render(request,'checkout.html',locals())
+
 class checkout(View):
-    def get(self,request):
-        user=request.user
-        add=Customer.objects.filter(user=user)
-        cart_items=Cart.objects.filter(user=user)
-        famount=0
-        for p in cart_items:
-            value=p.quantity * p.product.discounted_price
-            famount=famount + value
-        totalamount=famount + 40
-        razoramount=int(totalamount * 100)
-        client=razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
-        data={"amount":razoramount,"currency":"INR","receipt":"order_rcptid_11"}
-        payment_response=client.order.create(data=data)
-        print(payment_response)
-        
-        return render(request,'checkout.html',locals())
+    def post(self, request):
+        try:
+            print(request.method)
+            user = request.user
+            add = Customer.objects.filter(user=user)
+            cart_items = Cart.objects.filter(user=user)
+            famount = 0
+            for p in cart_items:
+                value = p.quantity * p.product.discounted_price
+                famount += value
+            totalamount = famount + 40
+            razoramount = int(totalamount * 100)
+            client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+            data = {"amount": razoramount, "currency": "INR", "receipt": "order_rcptid_11"}
+            payment_response = client.order.create(data=data)
+            payment = Payment(
+                user = user,
+                amount = totalamount
+            )
+            payment.save()
+            print(payment_response)
+            return render(request, 'checkout.html', locals())
+        except Exception as e:
+            print("Error:", e)
+            return HttpResponse("An error occurred during checkout. Please try again later.")
+    
+    # def post(self,request):
+    #     print(request.method)
+    #     user=request.user
+    #     add=Customer.objects.filter(user=user)
+    #     cart_items=Cart.objects.filter(user=user)
+    #     famount=0
+    #     for p in cart_items:
+    #         value=p.quantity * p.product.discounted_price
+    #         famount=famount + value
+    #     totalamount=famount + 40
+    #     razoramount=int(totalamount * 100)
+    #     client=razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
+    #     data={"amount":razoramount,"currency":"INR","receipt":"order_rcptid_11"}
+    #     payment_response=client.order.create(data=data)
+    #     print(payment_response)
+    #     return render(request,'checkout.html',locals())
 
 def show_cart(request):
     user=request.user
