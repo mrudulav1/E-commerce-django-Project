@@ -8,6 +8,8 @@ from .forms import CustomerRegisterationForm,CustomerProfileForm
 from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def home(request):
@@ -127,6 +129,10 @@ def add_to_cart(request):
 #         print(payment_response)
 #         return render(request,'checkout.html',locals())
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+@method_decorator(login_required, name='dispatch')
 class checkout(View):
     def get(self, request):
         try:
@@ -160,15 +166,17 @@ class checkout(View):
         except Exception as e:
             print("Error:", e)
             return HttpResponse("An error occurred during checkout. Please try again later.")
-        
+
+  
 def paymentdone(request):
+    print("view reached")
     order_id = request.GET.get('order_id')
     payment_id = request.GET.get('payment_id')
     cust_id = request.GET.get('cust_id')
 
     print(cust_id,payment_id,order_id)
 
-    user = request.user.id
+    user = request.user
     # customer = Customer.objects.get(id=4)
     # print(customer)
     customer = Customer.objects.get(id=cust_id)
@@ -178,21 +186,31 @@ def paymentdone(request):
 
     payment.razorpay_payment_id = payment_id
     payment.save()
+    print("paymet saved")
+    
+    print(user)
 
-    cart = Cart.objects.filter(user=user)
+    user_id = user.id
+    print(user_id)
+
+    cart = Cart.objects.filter(user=user_id)
+    
+    
 
     for c in cart:
+        print(c)
         purchase=OrderPlaced (
-            user = user,
+            user = user_id,
             customer = customer,
             product= c.product,
             quantitu = c.quantity,
             payment = payment
             )
         purchase.save()
+        print(purchase)
         c.delete()
 
-    return HttpResponse('done')        
+    return render(request, 'success.html')        
 
     
     # def post(self,request):
@@ -224,8 +242,14 @@ def show_cart(request):
 
 
 def orders(request):
+    print("view reached")
     order_placed=OrderPlaced.objects.filter(user=request.user)
-    return render(request,'orders.html',locals())
+    context = {
+        order_placed:'order_placed'
+    }
+    print(context)
+    # return render(request,'orders.html',locals())
+    return render(request,'orders.html',context)
 
 
 def plus_cart(request):
