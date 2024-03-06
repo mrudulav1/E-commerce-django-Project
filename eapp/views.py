@@ -223,6 +223,11 @@ def show_cart(request):
     return render(request,'addtocart.html',locals())
 
 
+def orders(request):
+    order_placed=OrderPlaced.objects.filter(user=request.user)
+    return render(request,'orders.html',locals())
+
+
 def plus_cart(request):
     if request.method == 'GET':
         print("button clicked")

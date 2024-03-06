@@ -11,9 +11,8 @@
 
   <link rel="stylesheet" href="{% static  'css/owl.carousel.min.css'%}">
   <link rel="stylesheet" href="{% static  'css/all.min.css'%}">
-
   <link rel="stylesheet" href="{% static  'css/style.css'%}">
-
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <title> Daily Products | {% block title %}{% endblock title %} Document</title>
 </head>
 
@@ -76,7 +75,7 @@
 
 
               <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-              <li><a class="dropdown-item" href="">Orders</a></li>
+              <li><a class="dropdown-item" href="{% url 'orders' %}">Orders</a></li>
               <li><a class="dropdown-item" href="{% url 'passwordchange' %}">Change Password</a></li>
               <!-- <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li> -->
               <li>
