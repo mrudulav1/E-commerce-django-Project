@@ -3,7 +3,7 @@ from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 import razorpay
-from .models import Payment, Product,Customer,Cart
+from .models import OrderPlaced, Payment, Product,Customer,Cart
 from .forms import CustomerRegisterationForm,CustomerProfileForm
 from django.contrib import messages
 from django.db.models import Q
@@ -128,7 +128,7 @@ def add_to_cart(request):
 #         return render(request,'checkout.html',locals())
 
 class checkout(View):
-    def post(self, request):
+    def get(self, request):
         try:
             print(request.method)
             user = request.user
@@ -143,16 +143,57 @@ class checkout(View):
             client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
             data = {"amount": razoramount, "currency": "INR", "receipt": "order_rcptid_11"}
             payment_response = client.order.create(data=data)
-            payment = Payment(
-                user = user,
-                amount = totalamount
-            )
-            payment.save()
-            print(payment_response)
+            order_id=payment_response['id']
+            order_status = payment_response['status']
+
+            if order_status=='created':
+                payment = Payment(
+                    user = user,
+                    amount = totalamount,
+                    razorpay_order_id = order_id,
+                    razorpay_payment_status=order_status
+
+                )
+                payment.save()
+                print(payment_response)
             return render(request, 'checkout.html', locals())
         except Exception as e:
             print("Error:", e)
             return HttpResponse("An error occurred during checkout. Please try again later.")
+        
+def paymentdone(request):
+    order_id = request.GET.get('order_id')
+    payment_id = request.GET.get('payment_id')
+    cust_id = request.GET.get('cust_id')
+
+    print(cust_id,payment_id,order_id)
+
+    user = request.user.id
+    # customer = Customer.objects.get(id=4)
+    # print(customer)
+    customer = Customer.objects.get(id=cust_id)
+
+    payment = Payment.objects.get(razorpay_order_id = order_id)
+    payment.paid = True
+
+    payment.razorpay_payment_id = payment_id
+    payment.save()
+
+    cart = Cart.objects.filter(user=user)
+
+    for c in cart:
+        purchase=OrderPlaced (
+            user = user,
+            customer = customer,
+            product= c.product,
+            quantitu = c.quantity,
+            payment = payment
+            )
+        purchase.save()
+        c.delete()
+
+    return HttpResponse('done')        
+
     
     # def post(self,request):
     #     print(request.method)
