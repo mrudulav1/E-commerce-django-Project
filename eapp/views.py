@@ -166,10 +166,13 @@ class checkout(View):
         except Exception as e:
             print("Error:", e)
             return HttpResponse("An error occurred during checkout. Please try again later.")
+        
 
-  
+
+
+
 def paymentdone(request):
-    print("view reached")
+    print(" paymentdone view reached")
     order_id = request.GET.get('order_id')
     payment_id = request.GET.get('payment_id')
     cust_id = request.GET.get('cust_id')
@@ -210,7 +213,53 @@ def paymentdone(request):
         print(purchase)
         c.delete()
 
-    return render ('orders')      
+    return redirect('orders')
+
+
+  
+# def paymentdone(request):
+#     print("view reached")
+#     order_id = request.GET.get('order_id')
+#     payment_id = request.GET.get('payment_id')
+#     cust_id = request.GET.get('cust_id')
+
+#     print(cust_id,payment_id,order_id)
+
+#     user = request.user
+#     # customer = Customer.objects.get(id=4)
+#     # print(customer)
+#     customer = Customer.objects.get(id=cust_id)
+
+#     payment = Payment.objects.get(razorpay_order_id = order_id)
+#     payment.paid = True
+
+#     payment.razorpay_payment_id = payment_id
+#     payment.save()
+#     print("paymet saved")
+    
+#     print(user)
+
+#     user_id = user.id
+#     print(user_id)
+
+#     cart = Cart.objects.filter(user=user_id)
+    
+    
+
+#     for c in cart:
+#         print(c)
+#         purchase=OrderPlaced (
+#             user = user,
+#             customer = customer,
+#             product= c.product,
+#             quantity = c.quantity,
+#             payment = payment
+#             )
+#         purchase.save()
+#         print(purchase)
+#         c.delete()
+
+#     return render ('orders')      
 
     
     # def post(self,request):
@@ -241,15 +290,27 @@ def show_cart(request):
     return render(request,'addtocart.html',locals())
 
 
+# def orders(request):
+#     print("view reached")
+#     order_placed=OrderPlaced.objects.filter(user=request.user)
+#     context = {
+#         order_placed:'order_placed'
+#     }
+#     print(context)
+#     # return render(request,'orders.html',locals())
+#     return render(request,'orders.html',context)
 def orders(request):
     print("view reached")
     order_placed=OrderPlaced.objects.filter(user=request.user)
     context = {
-        order_placed:'order_placed'
+        'order_placed': order_placed
     }
     print(context)
     # return render(request,'orders.html',locals())
     return render(request,'orders.html',context)
+
+
+
 
 
 def plus_cart(request):
