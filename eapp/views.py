@@ -200,17 +200,17 @@ def paymentdone(request):
     for c in cart:
         print(c)
         purchase=OrderPlaced (
-            user = user_id,
+            user = user,
             customer = customer,
             product= c.product,
-            quantitu = c.quantity,
+            quantity = c.quantity,
             payment = payment
             )
         purchase.save()
         print(purchase)
         c.delete()
 
-    return render(request, 'success.html')        
+    return render ('orders')      
 
     
     # def post(self,request):
