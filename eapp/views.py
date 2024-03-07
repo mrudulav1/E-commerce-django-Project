@@ -13,19 +13,31 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
-    return render(request,'home.html')
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    return render(request,'home.html',locals())
 
 def about(request):
-    return render(request,'about.html')
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    return render(request,'about.html',locals())
 
 def contact(request):
-    return render(request,'contact.html')
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    return render(request,'contact.html',locals())
 
 
 
 class categoryView(View):
     #display the products
     def get(self,request,val):
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         product=Product.objects.filter(category=val)
         title=Product.objects.filter(category=val).values('title')
         return render(request,'category.html',locals())
@@ -34,6 +46,9 @@ class CategoryTittle(View):
     def get(self,request,val):
         product=Product.objects.filter(title=val)
         title=Product.objects.filter(category=product[0].category).values('title')
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         return render(request,'category.html',locals())
 
 
@@ -42,11 +57,17 @@ class CategoryTittle(View):
 class ProductDetails(View):
     def get(self,request,pk):
         product=Product.objects.get(pk=pk)
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         return render(request,'productdetails.html',locals())
 
 class CustomerRegistrationView(View):
     def get(self,request):
         form=CustomerRegisterationForm()
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         return render(request,'customerregistration.html',locals())
     def post(self,request):
         form=CustomerRegisterationForm(request.POST)
@@ -56,10 +77,16 @@ class CustomerRegistrationView(View):
         else:
             messages.warning(request,"Invalid Input Data")
         return render(request,'customerregistration.html',locals())
+    
 class ProfileView(View):
     def get(self,request):
-        form=CustomerProfileForm()
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         return render(request,'profile.html',locals())
+
+
+        # form=CustomerProfileForm()
     def post(self,request):
         form=CustomerProfileForm(request.POST)
         if form.is_valid():
@@ -79,13 +106,19 @@ class ProfileView(View):
         return render(request,'profile.html',locals())
     
 def address(request):
-    add=Customer.objects.filter(user=request.user)
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+        add=Customer.objects.filter(user=request.user)
     return render(request,'address.html',locals())
 
 class UpdateAddress(View):
     def get(self,request,pk):
         add=Customer.objects.get(pk=pk)
         form=CustomerProfileForm(instance=add)
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         return render(request,'UpdateAddress.html',locals())
 
     def post(self,request,pk):
@@ -111,23 +144,7 @@ def add_to_cart(request):
     Cart(user=user,product=product).save()
     return redirect('/cart/')
 
-# class checkout(View):
-#     def post(self,request):
-#         print(request.method)
-#         user=request.user
-#         add=Customer.objects.filter(user=user)
-#         cart_items=Cart.objects.filter(user=user)
-#         famount=0
-#         for p in cart_items:
-#             value=p.quantity * p.product.discounted_price
-#             famount=famount + value
-#         totalamount=famount + 40
-#         razoramount=int(totalamount * 100)
-#         client=razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
-#         data={"amount":razoramount,"currency":"INR","receipt":"order_rcptid_11"}
-#         payment_response=client.order.create(data=data)
-#         print(payment_response)
-#         return render(request,'checkout.html',locals())
+
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -135,6 +152,9 @@ from django.utils.decorators import method_decorator
 @method_decorator(login_required, name='dispatch')
 class checkout(View):
     def get(self, request):
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem=len(Cart.objects.filter(user=request.user))
         try:
             print(request.method)
             user = request.user
@@ -180,8 +200,7 @@ def paymentdone(request):
     print(cust_id,payment_id,order_id)
 
     user = request.user
-    # customer = Customer.objects.get(id=4)
-    # print(customer)
+  
     customer = Customer.objects.get(id=cust_id)
 
     payment = Payment.objects.get(razorpay_order_id = order_id)
@@ -216,68 +235,7 @@ def paymentdone(request):
     return redirect('orders')
 
 
-  
-# def paymentdone(request):
-#     print("view reached")
-#     order_id = request.GET.get('order_id')
-#     payment_id = request.GET.get('payment_id')
-#     cust_id = request.GET.get('cust_id')
 
-#     print(cust_id,payment_id,order_id)
-
-#     user = request.user
-#     # customer = Customer.objects.get(id=4)
-#     # print(customer)
-#     customer = Customer.objects.get(id=cust_id)
-
-#     payment = Payment.objects.get(razorpay_order_id = order_id)
-#     payment.paid = True
-
-#     payment.razorpay_payment_id = payment_id
-#     payment.save()
-#     print("paymet saved")
-    
-#     print(user)
-
-#     user_id = user.id
-#     print(user_id)
-
-#     cart = Cart.objects.filter(user=user_id)
-    
-    
-
-#     for c in cart:
-#         print(c)
-#         purchase=OrderPlaced (
-#             user = user,
-#             customer = customer,
-#             product= c.product,
-#             quantity = c.quantity,
-#             payment = payment
-#             )
-#         purchase.save()
-#         print(purchase)
-#         c.delete()
-
-#     return render ('orders')      
-
-    
-    # def post(self,request):
-    #     print(request.method)
-    #     user=request.user
-    #     add=Customer.objects.filter(user=user)
-    #     cart_items=Cart.objects.filter(user=user)
-    #     famount=0
-    #     for p in cart_items:
-    #         value=p.quantity * p.product.discounted_price
-    #         famount=famount + value
-    #     totalamount=famount + 40
-    #     razoramount=int(totalamount * 100)
-    #     client=razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET))
-    #     data={"amount":razoramount,"currency":"INR","receipt":"order_rcptid_11"}
-    #     payment_response=client.order.create(data=data)
-    #     print(payment_response)
-    #     return render(request,'checkout.html',locals())
 
 def show_cart(request):
     user=request.user
@@ -287,19 +245,17 @@ def show_cart(request):
         value=p.quantity * p.product.discounted_price
         amount=amount+value
     totalamount=amount+40
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
     return render(request,'addtocart.html',locals())
 
 
-# def orders(request):
-#     print("view reached")
-#     order_placed=OrderPlaced.objects.filter(user=request.user)
-#     context = {
-#         order_placed:'order_placed'
-#     }
-#     print(context)
-#     # return render(request,'orders.html',locals())
-#     return render(request,'orders.html',context)
+
 def orders(request):
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
     print("view reached")
     order_placed=OrderPlaced.objects.filter(user=request.user)
     context = {

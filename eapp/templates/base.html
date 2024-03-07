@@ -91,7 +91,7 @@
 
           </li>
           <li class="nav-item mz-2">
-            <a href="#" class="nav-link text-white">Cart 4</a>
+            <a href="{% url 'showcart' %}" class="nav-link text-white"> <span class="badge bg-danger">{% if totalitem > 0 %} {{totalitem}} {% endif %}</span>Cart</a>
           </li>
           <li class="nav-item mz-2">
             <a href="#" class="nav-link text-white"> WhishListItem 4</a>
