@@ -57,11 +57,11 @@ class CategoryTittle(View):
 class ProductDetails(View):
     def get(self,request,pk):
         product=Product.objects.get(pk=pk)
-        wishlist = Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
-        totalitem=0
+        wishlist = Wishlist.objects.filter(Q(product=product) & Q(user=request.user)).exists()
+        totalitem = 0
         if request.user.is_authenticated:
-            totalitem=len(Cart.objects.filter(user=request.user))
-        return render(request,'productdetails.html',locals())
+            totalitem = Cart.objects.filter(user=request.user).count()
+        return render(request, 'productdetails.html', {'product': product, 'wishlist': wishlist, 'totalitem': totalitem})
 
 class CustomerRegistrationView(View):
     def get(self,request):
@@ -335,13 +335,15 @@ def remove_cart(request):
         return JsonResponse(data)
     
 def plus_wishlist(request):
-    if request.method == 'GET':
-        prod_id = request.GET['prod_id']
+    print("data : ",request)
+    print("clicked")
+    if request.method == 'POST':
+        prod_id = request.POST.get('prod_id')
         product = Product.objects.get(id=prod_id)
         user = request.user
-        Wishlist(user=user,product=product).save()
+        Wishlist.objects.create(user=user, product=product)
         data = {
-            'message':'Wishlist Added Successfully',
+            'message': 'Wishlist Added Successfully',
         }
         return JsonResponse(data)
     
