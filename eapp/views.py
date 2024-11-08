@@ -251,10 +251,13 @@ def show_cart(request):
 
 def orders(request):
     totalitem=0
+    print("view reached")
     if request.user.is_authenticated:
         totalitem=len(Cart.objects.filter(user=request.user))
-    print("view reached")
-    order_placed=OrderPlaced.objects.filter(user=request.user)
+        print(request.user)
+        order_placed=OrderPlaced.objects.filter(user=request.user)
+    else:
+        print("user not authenticated")
     context = {
         'order_placed': order_placed
     }

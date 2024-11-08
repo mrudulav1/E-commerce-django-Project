@@ -20,12 +20,12 @@
                     <div class="card m-2">
                         <div class="card-body">
                             <h3>Address{{forloop.counter}}</h3>
-                            <p>Name:{{ad.name}}</p>
-                            <p>Locality:{{ad.locality}}</p>
-                            <p>Mobile:{{ad.mobile}}</p>
-                            <p>City:{{ad.city}}</p>
-                            <p>State:{{ad.state}}</p>
-                            <p>Pincode:{{ad.zipcode}}</p>
+                            <p>NAME:  {{ad.name}}</p>
+                            <p>LOCALITY:  {{ad.locality}}</p>
+                            <p>MOBILE:  {{ad.mobile}}</p>
+                            <p>CITY:  {{ad.city}}</p>
+                            <p>STATE:  {{ad.state}}</p>
+                            <p>PINCODE:  {{ad.zipcode}}</p>
                             <p class="text-center"><a href="{% url 'UpdateAddress' pk=ad.id %}" type="button"
                                     class="btn btn-success">Update</a></p>
                         </div>
